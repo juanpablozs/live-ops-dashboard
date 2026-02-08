@@ -27,14 +27,14 @@ export function deduplicateEvents(
  * Keep only the N most recent events
  */
 export function boundEventList(events: Event[], maxSize: number): Event[] {
-  if (events.length <= maxSize) {
-    return events
+  // Always sort by createdAt descending and then take up to maxSize
+  const sorted = [...events].sort((a, b) => {
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  })
+
+  if (sorted.length <= maxSize) {
+    return sorted
   }
 
-  // Sort by createdAt descending and take the first maxSize
-  return events
-    .sort((a, b) => {
-      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    })
-    .slice(0, maxSize)
+  return sorted.slice(0, maxSize)
 }
